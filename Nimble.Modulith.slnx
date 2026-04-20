@@ -3,6 +3,10 @@
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
   </Folder>
+  <Folder Name="/Products Module/">
+    <Project Path="Nimble.Modulith.Products.Contracts/Nimble.Modulith.Products.Contracts.csproj" />
+    <Project Path="Nimble.Modulith.Products/Nimble.Modulith.Products.csproj" />
+  </Folder>
   <Folder Name="/Users Module/">
     <Project Path="Nimble.Modulith.Users.Contracts/Nimble.Modulith.Users.Contracts.csproj" />
     <Project Path="Nimble.Modulith.Users/Nimble.Modulith.Users.csproj" />

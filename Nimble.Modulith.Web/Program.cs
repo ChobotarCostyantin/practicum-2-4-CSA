@@ -2,6 +2,7 @@ using FastEndpoints;
 using FastEndpoints.Security;
 using FastEndpoints.Swagger;
 using Nimble.Modulith.Users;
+using Nimble.Modulith.Products;
 using Serilog;
 
 var logger = Log.Logger = new LoggerConfiguration()
@@ -24,7 +25,9 @@ builder.Services.AddFastEndpoints()
     .AddAuthorization()
     .SwaggerDocument();
 
+// Add module services
 builder.AddUsersModuleServices(logger);
+builder.AddProductsModuleServices(logger);
 
 var app = builder.Build();
 
@@ -34,6 +37,8 @@ app.UseAuthorization();
 app.UseFastEndpoints()
     .UseSwaggerGen();
 
+// Ensure module databases are created
 await app.EnsureUsersModuleDatabaseAsync();
+await app.EnsureProductsModuleDatabaseAsync();
 
 app.Run();
