@@ -28,3 +28,108 @@ POST {{Nimble.Modulith.Web_HostAddress}}/logout
 GET {{Nimble.Modulith.Web_HostAddress}}/profile
 
 ###
+
+### List Products
+
+GET {{Nimble.Modulith.Web_HostAddress}}/products
+
+### Create a Product (if logged in)
+POST {{Nimble.Modulith.Web_HostAddress}}/products
+Content-Type: application/json
+{
+  "name": "Sample Product",
+  "description": "This is a sample product.",
+  "price": 19.99
+}
+
+### View a Product by ID
+GET {{Nimble.Modulith.Web_HostAddress}}/products/1
+
+### Update a Product by ID (if logged in)
+PUT {{Nimble.Modulith.Web_HostAddress}}/products/1
+Content-Type: application/json
+{
+  "name": "Updated Product",
+  "description": "This is an updated product description.",
+  "price": 24.99
+}
+
+### Delete a Product by ID (if logged in)
+DELETE {{Nimble.Modulith.Web_HostAddress}}/products/1
+
+###
+
+### Customers Module Tests
+
+### Create a Customer
+POST {{Nimble.Modulith.Web_HostAddress}}/customers
+Content-Type: application/json
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "john.doe@example.com",
+  "phoneNumber": "+1-555-0123",
+  "address": {
+    "street": "123 Main St",
+    "city": "New York",
+    "state": "NY",
+    "postalCode": "10001",
+    "country": "USA"
+  }
+}
+
+### List All Customers
+GET {{Nimble.Modulith.Web_HostAddress}}/customers
+
+### Get Customer by ID
+GET {{Nimble.Modulith.Web_HostAddress}}/customers/1
+
+### Orders Module Tests
+
+### Create an Order
+POST {{Nimble.Modulith.Web_HostAddress}}/orders
+Content-Type: application/json
+{
+  "customerId": 1,
+  "orderDate": "2025-10-24",
+  "items": [
+    {
+      "productId": 1,
+      "productName": "Sample Product",
+      "quantity": 2,
+      "unitPrice": 19.99
+    },
+    {
+      "productId": 2,
+      "productName": "Another Product",
+      "quantity": 1,
+      "unitPrice": 29.99
+    }
+  ]
+}
+
+### Add Item to Order
+POST {{Nimble.Modulith.Web_HostAddress}}/orders/1/items
+Content-Type: application/json
+{
+  "productId": 3,
+  "productName": "Third Product",
+  "quantity": 1,
+  "unitPrice": 15.99
+}
+
+### Delete Item from Order
+DELETE {{Nimble.Modulith.Web_HostAddress}}/orders/1/items/2
+
+### Get Order by ID
+GET {{Nimble.Modulith.Web_HostAddress}}/orders/1
+
+### List Orders by Date
+GET {{Nimble.Modulith.Web_HostAddress}}/orders/by-date/2025-10-24
+
+### Update Order Status
+PATCH {{Nimble.Modulith.Web_HostAddress}}/orders/1/status
+Content-Type: application/json
+{
+  "status": "Processing"
+}

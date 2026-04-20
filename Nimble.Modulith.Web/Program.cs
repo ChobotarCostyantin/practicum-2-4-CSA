@@ -1,6 +1,7 @@
 using FastEndpoints;
 using FastEndpoints.Security;
 using FastEndpoints.Swagger;
+using Nimble.Modulith.Customers;
 using Nimble.Modulith.Users;
 using Nimble.Modulith.Products;
 using Serilog;
@@ -15,7 +16,14 @@ logger.Information("Starting web host");
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((_, config) => config.ReadFrom.Configuration(builder.Configuration));
 
+// Add service defaults (Aspire configuration)
 builder.AddServiceDefaults();
+
+// Add Mediator with source generation
+builder.Services.AddMediator(options =>
+{
+    options.ServiceLifetime = ServiceLifetime.Scoped;
+});
 
 builder.Services.AddFastEndpoints()
     .AddAuthenticationJwtBearer(s =>
@@ -28,6 +36,7 @@ builder.Services.AddFastEndpoints()
 // Add module services
 builder.AddUsersModuleServices(logger);
 builder.AddProductsModuleServices(logger);
+builder.AddCustomersModuleServices(logger);
 
 var app = builder.Build();
 
@@ -40,5 +49,6 @@ app.UseFastEndpoints()
 // Ensure module databases are created
 await app.EnsureUsersModuleDatabaseAsync();
 await app.EnsureProductsModuleDatabaseAsync();
+await app.EnsureCustomersModuleDatabaseAsync();
 
 app.Run();

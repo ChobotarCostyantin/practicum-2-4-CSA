@@ -10,6 +10,10 @@
     <PackageReference Include="FastEndpoints" />
     <PackageReference Include="FastEndpoints.Security" />
     <PackageReference Include="FastEndpoints.Swagger" />
+    <PackageReference Include="Mediator.SourceGenerator">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
     <PackageReference Include="Serilog.AspNetCore" />
   </ItemGroup>
@@ -18,6 +22,7 @@
     <ProjectReference Include="..\Nimble.Modulith.Users\Nimble.Modulith.Users.csproj" />
     <ProjectReference Include="..\Nimble.Modulith.ServiceDefaults\Nimble.Modulith.ServiceDefaults.csproj" />
     <ProjectReference Include="..\Nimble.Modulith.Products\Nimble.Modulith.Products.csproj" />
+    <ProjectReference Include="..\Nimble.Modulith.Customers\Nimble.Modulith.Customers.csproj" />
   </ItemGroup>
 
 </Project>
