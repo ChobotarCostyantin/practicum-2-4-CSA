@@ -1,17 +1,18 @@
 ﻿using Ardalis.Result;
 using FastEndpoints;
 using Mediator;
+using Nimble.Modulith.Customers.Infrastructure;
 using Nimble.Modulith.Customers.UseCases.Customers;
 using Nimble.Modulith.Customers.UseCases.Customers.Commands;
 
 namespace Nimble.Modulith.Customers.Endpoints.Customers;
 
-public class Create(IMediator mediator) : Endpoint<CreateCustomerRequest, CustomerResponse>
+public class Create(IMediator mediator, ICustomerAuthorizationService authService) : Endpoint<CreateCustomerRequest, CustomerResponse>
 {
     public override void Configure()
     {
         Post("/customers");
-        AllowAnonymous();
+        // Require authentication - removed AllowAnonymous()
         Summary(s =>
         {
             s.Summary = "Create a new customer";
@@ -22,6 +23,14 @@ public class Create(IMediator mediator) : Endpoint<CreateCustomerRequest, Custom
 
     public override async Task HandleAsync(CreateCustomerRequest req, CancellationToken ct)
     {
+        // Check if user is Admin or creating customer for themselves
+        if (!authService.IsAdminOrOwner(User, req.Email))
+        {
+            AddError("You can only create a customer record for your own email address");
+            await Send.ErrorsAsync(statusCode: 403, cancellation: ct);
+            return;
+        }
+
         var command = new CreateCustomerCommand(
             req.FirstName,
             req.LastName,
@@ -38,6 +47,16 @@ public class Create(IMediator mediator) : Endpoint<CreateCustomerRequest, Custom
 
         if (!result.IsSuccess)
         {
+            if (result.Status == ResultStatus.Invalid)
+            {
+                foreach (var error in result.ValidationErrors)
+                {
+                    AddError(error.ErrorMessage);
+                }
+                await Send.ErrorsAsync(cancellation: ct);
+                return;
+            }
+
             await Send.NotFoundAsync(ct);
             return;
         }

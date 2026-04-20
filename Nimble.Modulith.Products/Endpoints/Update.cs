@@ -28,6 +28,7 @@ public class Update(ProductsDbContext dbContext) : Endpoint<UpdateProductRequest
     {
         Put("/products/{id}");
         Tags("products");
+        Roles("Admin");
         Summary(s =>
         {
             s.Summary = "Update a product";

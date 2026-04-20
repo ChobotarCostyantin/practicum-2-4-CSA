@@ -28,6 +28,7 @@ public class Create(ProductsDbContext dbContext) : Endpoint<CreateProductRequest
     {
         Post("/products");
         Tags("products");
+        Roles("Admin");
         Summary(s =>
         {
             s.Summary = "Create a new product";

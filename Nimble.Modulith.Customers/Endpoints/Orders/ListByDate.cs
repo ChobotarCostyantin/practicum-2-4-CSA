@@ -9,11 +9,11 @@ public class ListByDate(IMediator mediator) : EndpointWithoutRequest<List<OrderR
     public override void Configure()
     {
         Get("/orders/by-date/{date}");
-        AllowAnonymous();
+        Roles("Admin");
         Summary(s =>
         {
             s.Summary = "List orders by date";
-            s.Description = "Returns all orders created on the specified date";
+            s.Description = "Returns all orders created on the specified date (Admin only)";
         });
         Tags("orders");
     }

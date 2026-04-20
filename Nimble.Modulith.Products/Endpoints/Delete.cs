@@ -17,6 +17,7 @@ public class Delete(ProductsDbContext dbContext) : Endpoint<DeleteProductRequest
     {
         Delete("/products/{id}");
         Tags("products");
+        Roles("Admin");
         Summary(s =>
         {
             s.Summary = "Delete a product";
