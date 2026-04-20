@@ -1,6 +1,30 @@
-@Nimble.Modulith.Web_HostAddress = http://localhost:5081
+@Nimble.Modulith.Web_HostAddress = http://localhost:5002
 
-GET {{Nimble.Modulith.Web_HostAddress}}/weatherforecast/
-Accept: application/json
+### Register a new user
+
+POST {{Nimble.Modulith.Web_HostAddress}}/register
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "Test123!"
+}
+
+### Login - Produces a Cookie for authenticated requests
+
+POST {{Nimble.Modulith.Web_HostAddress}}/login
+Content-Type: application/json
+{
+  "email": "test@example.com",
+  "password": "Test123!"
+}
+
+### Logout
+
+POST {{Nimble.Modulith.Web_HostAddress}}/logout
+
+### View Profile (if logged in)
+
+GET {{Nimble.Modulith.Web_HostAddress}}/profile
 
 ###
