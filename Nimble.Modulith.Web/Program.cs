@@ -6,6 +6,7 @@ using Nimble.Modulith.Customers;
 using Nimble.Modulith.Email;
 using Nimble.Modulith.Users;
 using Nimble.Modulith.Products;
+using Nimble.Modulith.Reporting;
 using Nimble.Modulith.Web;
 using Serilog;
 
@@ -34,6 +35,7 @@ builder.AddUsersModuleServices(logger);
 builder.AddProductsModuleServices(logger);
 builder.AddCustomersModuleServices(logger);
 builder.AddEmailModuleServices(logger);
+builder.AddReportingModuleServices(logger);
 
 builder.Services.AddFastEndpoints()
     .AddAuthenticationJwtBearer(s =>
@@ -68,5 +70,6 @@ app.MapDefaultEndpoints();
 await app.EnsureUsersModuleDatabaseAsync();
 await app.EnsureProductsModuleDatabaseAsync();
 await app.EnsureCustomersModuleDatabaseAsync();
+await app.EnsureReportingModuleDatabaseAsync();
 
 app.Run();

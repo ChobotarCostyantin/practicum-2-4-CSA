@@ -17,8 +17,8 @@ public class ConfirmOrderHandler(IRepository<Order> repository)
             return Result<OrderDto>.NotFound($"Order with ID {command.OrderId} not found");
         }
 
-        // Change order status to Processing
-        order.Status = OrderStatus.Processing;
+        // Change order status to Confirmed
+        order.Status = OrderStatus.Confirmed;
         order.UpdatedAt = DateTime.UtcNow;
 
         await repository.UpdateAsync(order, ct);
