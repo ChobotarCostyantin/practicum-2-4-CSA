@@ -9,6 +9,7 @@ public class CreateProductRequest
 {
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
+    public decimal Price { get; set; }
 }
 
 public class CreateProductResponse
@@ -16,6 +17,7 @@ public class CreateProductResponse
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
+    public decimal Price { get; set; }
     public DateTime DateCreated { get; set; }
     public string CreatedByUser { get; set; } = string.Empty;
 }
@@ -32,7 +34,7 @@ public class Create(ProductsDbContext dbContext) : Endpoint<CreateProductRequest
         Summary(s =>
         {
             s.Summary = "Create a new product";
-            s.Description = "Creates a new product with a name and description";
+            s.Description = "Creates a new product with a name, description and price";
         });
     }
 
@@ -42,6 +44,7 @@ public class Create(ProductsDbContext dbContext) : Endpoint<CreateProductRequest
         {
             Name = req.Name,
             Description = req.Description,
+            Price = req.Price,
             DateCreated = DateTime.UtcNow,
             CreatedByUser = User.Identity?.Name ?? "Anonymous"
         };
@@ -54,6 +57,7 @@ public class Create(ProductsDbContext dbContext) : Endpoint<CreateProductRequest
             Id = product.Id,
             Name = product.Name,
             Description = product.Description,
+            Price = product.Price,
             DateCreated = product.DateCreated,
             CreatedByUser = product.CreatedByUser
         };

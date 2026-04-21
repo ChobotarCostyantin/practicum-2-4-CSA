@@ -46,9 +46,7 @@ public class Create(IMediator mediator, ICustomerAuthorizationService authServic
             req.OrderDate,
             req.Items.Select(i => new CreateOrderItemDto(
                 i.ProductId,
-                i.ProductName,
-                i.Quantity,
-                i.UnitPrice
+                i.Quantity
             )).ToList()
         );
 

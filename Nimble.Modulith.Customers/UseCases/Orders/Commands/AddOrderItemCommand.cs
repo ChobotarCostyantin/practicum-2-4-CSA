@@ -6,7 +6,5 @@ namespace Nimble.Modulith.Customers.UseCases.Orders.Commands;
 public record AddOrderItemCommand(
     int OrderId,
     int ProductId,
-    string ProductName,
-    int Quantity,
-    decimal UnitPrice
+    int Quantity
 ) : ICommand<Result<OrderDto>>;

@@ -53,9 +53,7 @@ public class AddItem(IMediator mediator, ICustomerAuthorizationService authServi
         var command = new AddOrderItemCommand(
             orderId,
             req.ProductId,
-            req.ProductName,
-            req.Quantity,
-            req.UnitPrice
+            req.Quantity
         );
 
         var result = await mediator.Send(command, ct);

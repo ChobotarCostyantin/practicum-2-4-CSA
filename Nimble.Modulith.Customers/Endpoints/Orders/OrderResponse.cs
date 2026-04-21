@@ -27,14 +27,10 @@ public record CreateOrderRequest(
 
 public record CreateOrderItemRequest(
     int ProductId,
-    string ProductName,
-    int Quantity,
-    decimal UnitPrice
+    int Quantity
 );
 
 public record AddOrderItemRequest(
     int ProductId,
-    string ProductName,
-    int Quantity,
-    decimal UnitPrice
+    int Quantity
 );

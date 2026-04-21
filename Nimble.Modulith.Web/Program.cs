@@ -5,6 +5,7 @@ using Nimble.Modulith.Customers;
 using Nimble.Modulith.Email;
 using Nimble.Modulith.Users;
 using Nimble.Modulith.Products;
+using Nimble.Modulith.Web;
 using Serilog;
 
 var logger = Log.Logger = new LoggerConfiguration()
@@ -17,14 +18,21 @@ logger.Information("Starting web host");
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((_, config) => config.ReadFrom.Configuration(builder.Configuration));
 
-// Add service defaults (Aspire configuration)
 builder.AddServiceDefaults();
 
-// Add Mediator with source generation
 builder.Services.AddMediator(options =>
 {
     options.ServiceLifetime = ServiceLifetime.Scoped;
+    options.PipelineBehaviors =
+    [
+        typeof(LoggingBehavior<,>)
+    ];
 });
+
+builder.AddUsersModuleServices(logger);
+builder.AddProductsModuleServices(logger);
+builder.AddCustomersModuleServices(logger);
+builder.AddEmailModuleServices(logger);
 
 builder.Services.AddFastEndpoints()
     .AddAuthenticationJwtBearer(s =>
@@ -34,12 +42,6 @@ builder.Services.AddFastEndpoints()
     .AddAuthorization()
     .SwaggerDocument();
 
-// Add module services
-builder.AddUsersModuleServices(logger);
-builder.AddProductsModuleServices(logger);
-builder.AddCustomersModuleServices(logger);
-builder.AddEmailModuleServices(logger);
-
 var app = builder.Build();
 
 app.UseAuthentication();
@@ -48,7 +50,6 @@ app.UseAuthorization();
 app.UseFastEndpoints()
     .UseSwaggerGen();
 
-// Ensure module databases are created
 await app.EnsureUsersModuleDatabaseAsync();
 await app.EnsureProductsModuleDatabaseAsync();
 await app.EnsureCustomersModuleDatabaseAsync();
