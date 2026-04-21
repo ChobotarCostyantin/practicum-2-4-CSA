@@ -23,7 +23,7 @@ public static class UsersModuleExtensions
         builder.Services.AddAuthorizationBuilder();
 
         // Add Identity with SignInManager support
-        builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+        builder.Services.AddIdentityCore<IdentityUser>(options =>
             {
                 // Configure Identity options
                 options.Password.RequiredLength = 6;
@@ -34,6 +34,7 @@ public static class UsersModuleExtensions
             
                 options.User.RequireUniqueEmail = true;
             })
+            .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<UsersDbContext>()
             .AddDefaultTokenProviders();
 
@@ -46,7 +47,6 @@ public static class UsersModuleExtensions
     {
         using var scope = app.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<UsersDbContext>();
-        await context.Database.EnsureDeletedAsync();
         await context.Database.EnsureCreatedAsync();
         
         return app;

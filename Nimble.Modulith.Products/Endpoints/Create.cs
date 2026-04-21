@@ -1,4 +1,5 @@
-﻿using FastEndpoints;
+﻿using System.Security.Claims;
+using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
 using Nimble.Modulith.Products.Data;
 using Nimble.Modulith.Products.Models;
@@ -46,7 +47,9 @@ public class Create(ProductsDbContext dbContext) : Endpoint<CreateProductRequest
             Description = req.Description,
             Price = req.Price,
             DateCreated = DateTime.UtcNow,
-            CreatedByUser = User.Identity?.Name ?? "Anonymous"
+            CreatedByUser = User.FindFirst(ClaimTypes.Email)?.Value 
+                            ?? User.FindFirstValue(ClaimTypes.Name) 
+                            ?? "Anonymous"
         };
 
         _dbContext.Products.Add(product);

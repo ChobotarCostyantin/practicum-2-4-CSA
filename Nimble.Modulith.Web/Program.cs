@@ -1,6 +1,7 @@
 using FastEndpoints;
 using FastEndpoints.Security;
 using FastEndpoints.Swagger;
+using Mediator;
 using Nimble.Modulith.Customers;
 using Nimble.Modulith.Email;
 using Nimble.Modulith.Users;
@@ -40,15 +41,29 @@ builder.Services.AddFastEndpoints()
         s.SigningKey = builder.Configuration["Auth:JwtSecret"];
     })
     .AddAuthorization()
-    .SwaggerDocument();
+    .SwaggerDocument(o =>
+    {
+        o.DocumentSettings = s =>
+        {
+            s.Title = "Nimble Modulith API";
+            s.Version = "v1";
+        };
+    });
 
 var app = builder.Build();
 
+app.UseDefaultExceptionHandler();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseFastEndpoints()
-    .UseSwaggerGen();
+app.UseFastEndpoints();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwaggerGen();
+}
+
+app.MapDefaultEndpoints();
 
 await app.EnsureUsersModuleDatabaseAsync();
 await app.EnsureProductsModuleDatabaseAsync();

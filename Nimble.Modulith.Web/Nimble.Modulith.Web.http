@@ -1,4 +1,4 @@
-@Nimble.Modulith.Web_HostAddress = http://localhost:5002
+@Nimble.Modulith.Web_HostAddress = http://localhost:5081
 
 ### Register a new user
 
@@ -62,21 +62,21 @@ DELETE {{Nimble.Modulith.Web_HostAddress}}/products/1
 ### Customers Module Tests
 
 ### Create a Customer
-POST {{Nimble.Modulith.Web_HostAddress}}/customers
-Content-Type: application/json
-{
-  "firstName": "John",
-  "lastName": "Doe",
-  "email": "john.doe@example.com",
-  "phoneNumber": "+1-555-0123",
-  "address": {
-    "street": "123 Main St",
-    "city": "New York",
-    "state": "NY",
-    "postalCode": "10001",
-    "country": "USA"
-  }
-}
+#POST {{Nimble.Modulith.Web_HostAddress}}/customers
+#Content-Type: application/json
+#{
+#  "firstName": "John",
+#  "lastName": "Doe",
+#  "email": "john.doeexample.com",
+#  "phoneNumber": "+1-555-0123",
+#  "address": {
+#    "street": "123 Main St",
+#    "city": "New York",
+#    "state": "NY",
+#    "postalCode": "10001",
+#    "country": "USA"
+#  }
+#}
 
 ### List All Customers
 GET {{Nimble.Modulith.Web_HostAddress}}/customers

@@ -1,6 +1,8 @@
 ﻿using FastEndpoints;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
+using FastEndpoints.Security;
 
 namespace Nimble.Modulith.Users.Endpoints;
 
@@ -20,11 +22,8 @@ public class LoginResponse
     public string? Token { get; set; }
 }
 
-public class Login(SignInManager<IdentityUser> signInManager) : 
-    Endpoint<LoginRequest, LoginResponse>
+public class Login(UserManager<IdentityUser> userManager) : Endpoint<LoginRequest, LoginResponse>
 {
-    private readonly SignInManager<IdentityUser> _signInManager = signInManager;
-
     public override void Configure()
     {
         Post("/login");
@@ -36,23 +35,24 @@ public class Login(SignInManager<IdentityUser> signInManager) :
     }
 
     public override async Task HandleAsync(LoginRequest req, CancellationToken ct)
-    {       
-        var result = await _signInManager.PasswordSignInAsync(
-            req.Email, 
-            req.Password, 
-            isPersistent: false, 
-            lockoutOnFailure: false);
-        
-        if (result.Succeeded)
+    {
+        var user = await userManager.FindByEmailAsync(req.Email);
+
+        if (user != null && await userManager.CheckPasswordAsync(user, req.Password))
         {
-            Response = new LoginResponse
+            var roles = await userManager.GetRolesAsync(user);
+
+            var jwtToken = JwtBearer.CreateToken(o =>
             {
-                Success = true,
-                Message = "Login successful",
-                Token = "TODO: Generate JWT token" // We'll implement JWT later
-            };
-            
-            await Send.OkAsync(Response, ct);
+                o.SigningKey = Config["Auth:JwtSecret"]!;
+                o.ExpireAt = DateTime.UtcNow.AddDays(7);
+                o.User.Roles.AddRange(roles);
+                o.User.Claims.Add((ClaimTypes.Email, user.Email!));
+                o.User.Claims.Add((ClaimTypes.Name, user.Email!));
+            });
+
+            await Send.OkAsync(new LoginResponse { Success = true, Message = "Login successful", Token = jwtToken },
+                ct);
         }
         else
         {
