@@ -1,0 +1,31 @@
+﻿@startuml
+!include https://raw.githubusercontent.com/adrianvlupu/C4-PlantUML/latest/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Container Diagram for Nimble.Modulith
+
+Person(user, "Користувач (Customer/Admin)", "Взаємодіє з системою через API клієнт (Swagger/Postman).")
+
+System_Boundary(nimble_system, "Nimble.Modulith System") {
+    Container(web_api, "Web API (Aspire AppHost)", "C#, .NET 10, FastEndpoints", "Єдина точка входу. Маршрутизує HTTP-запити до відповідних модулів.")
+    
+    System_Boundary(db_boundary, "Бази даних (SQL Server Container)") {
+        ContainerDb(users_db, "Users DB", "SQL Server", "Зберігає Identity користувачів, паролі та ролі.")
+        ContainerDb(products_db, "Products DB", "SQL Server", "Зберігає каталог товарів та актуальні ціни.")
+        ContainerDb(customers_db, "Customers DB", "SQL Server", "Зберігає профілі клієнтів та історію замовлень.")
+        ContainerDb(reporting_db, "Reporting DB", "SQL Server", "Зберігає аналітичні дані у вигляді Star Schema.")
+    }
+}
+
+System_Ext(papercut, "Papercut SMTP", "Docker Container", "Перехоплює транзакційні листи.")
+
+Rel(user, web_api, "Виконує API запити", "JSON/HTTPS")
+
+Rel(web_api, users_db, "Читає/Записує дані", "EF Core")
+Rel(web_api, products_db, "Читає/Записує дані", "EF Core")
+Rel(web_api, customers_db, "Читає/Записує дані", "EF Core")
+Rel(web_api, reporting_db, "Читає/Записує дані", "EF Core / Dapper")
+
+Rel(web_api, papercut, "Відправляє повідомлення", "SMTP")
+@enduml

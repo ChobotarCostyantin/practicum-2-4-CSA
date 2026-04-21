@@ -1,0 +1,20 @@
+﻿@startuml
+!include https://raw.githubusercontent.com/adrianvlupu/C4-PlantUML/latest/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+
+title System Context Diagram for Nimble.Modulith
+
+Person(customer, "Клієнт", "Зареєстрований користувач, який переглядає товари та створює замовлення.")
+Person(admin, "Адміністратор", "Керує каталогом товарів, призначає ролі та переглядає аналітику.")
+
+System(nimble_system, "Nimble.Modulith System", "Платформа електронної комерції (Modular Monolith) для управління товарами, клієнтами та замовленнями.")
+
+System_Ext(smtp_server, "SMTP Server (Papercut)", "Система для перехоплення та відображення транзакційних електронних листів.")
+
+Rel(customer, nimble_system, "Шукає товари, робить замовлення", "HTTPS/REST")
+Rel(admin, nimble_system, "Управляє системою, формує звіти", "HTTPS/REST")
+Rel(nimble_system, smtp_server, "Відправляє листи (чеки, паролі)", "SMTP")
+Rel(admin, smtp_server, "Перевіряє відправлені листи", "HTTP")
+Rel(customer, smtp_server, "Отримує листи", "HTTP")
+@enduml

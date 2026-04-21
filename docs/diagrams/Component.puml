@@ -1,0 +1,40 @@
+﻿@startuml
+!include https://raw.githubusercontent.com/adrianvlupu/C4-PlantUML/latest/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Component Diagram for Customers Module
+
+Container_Boundary(customers_module, "Customers Module") {
+    Component(endpoints, "Customer/Order Endpoints", "FastEndpoints", "Приймає HTTP запити (створення клієнта, підтвердження замовлення).")
+    
+    Component(customer_handler, "Customer Use Cases", "Mediator Handlers", "Бізнес-логіка управління профілями клієнтів.")
+    Component(order_handler, "Order Use Cases", "Mediator Handlers", "Бізнес-логіка створення та підтвердження замовлень.")
+    
+    Component(repository, "Data Repositories", "EF Core", "Забезпечує абстракцію доступу до даних.")
+}
+
+ContainerDb(customers_db, "Customers DB", "SQL Server", "Зберігає агрегати Customer та Order.")
+
+' Зовнішні залежності модуля
+Component(mediator, "MediatR Pipeline", "Library", "Забезпечує маршрутизацію команд та подій.")
+Component(users_contract, "Users.Contracts", "Interface", "Інтерфейс для створення користувачів.")
+Component(products_contract, "Products.Contracts", "Interface", "Інтерфейс для отримання ціни товарів.")
+Component(email_contract, "Email.Contracts", "Interface", "Інтерфейс для відправки листів.")
+
+Rel(endpoints, customer_handler, "Відправляє команди", "Mediator")
+Rel(endpoints, order_handler, "Відправляє команди", "Mediator")
+
+Rel(customer_handler, repository, "Використовує", "C#")
+Rel(order_handler, repository, "Використовує", "C#")
+Rel(repository, customers_db, "Читає/Записує", "EF Core")
+
+Rel(customer_handler, mediator, "Публікує", "UserCreateCommand")
+Rel(mediator, users_contract, "Маршрутизує")
+
+Rel(order_handler, mediator, "Запитує", "GetProductDetailsQuery")
+Rel(mediator, products_contract, "Маршрутизує")
+
+Rel(order_handler, mediator, "Публікує", "SendEmailCommand / OrderCreatedEvent")
+Rel(mediator, email_contract, "Маршрутизує")
+@enduml
